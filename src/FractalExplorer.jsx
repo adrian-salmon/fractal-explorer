@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 const FractalExplorer = () => {
   const [activeFractal, setActiveFractal] = useState('sierpinski');
-  const [iterations, setIterations] = useState(5);
-  const [canvasSize, setCanvasSize] = useState({ width: 600, height: 520 });
+  const [iterations, setIterations] = useState(0);
+  const [canvasSize, setCanvasSize] = useState({ width: 400, height: 400 });
   const [info, setInfo] = useState({
     elements: 0,
     pattern: "",
@@ -354,14 +354,7 @@ const FractalExplorer = () => {
     ctx.lineWidth = lineWidth;
     ctx.stroke();
     
-    // For high iterations, add a label to help users understand what they're seeing
-    if (iterations >= 8) {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-      ctx.fillRect(10, canvasSize.height - 40, 250, 30);
-      ctx.fillStyle = "#FFFFFF";
-      ctx.font = "14px Arial";
-      ctx.fillText(`Iteration ${iterations}: Entire fractal structure visible`, 20, canvasSize.height - 20);
-    }
+    // Removed text overlay for high iterations
   };
 
   // UTILITY FUNCTIONS
@@ -422,16 +415,13 @@ const FractalExplorer = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-4 bg-gray-100 rounded-lg shadow-lg">
-      <h1 className="text-3xl font-bold mb-2 text-purple-800">Fractal Explorer</h1>
-      <p className="mb-4 text-gray-700">
-        Explore how different fractals develop through multiple iterations
-      </p>
+    <div className="flex flex-col items-center p-2 bg-gray-100 rounded-lg shadow-lg max-w-md">
+      <h1 className="text-xl font-bold mb-2 text-purple-800">Fractal Explorer</h1>
       
       {/* Fractal selection tabs */}
-      <div className="flex mb-6 bg-white rounded-lg shadow-md overflow-hidden w-full max-w-xl">
+      <div className="flex mb-3 bg-white rounded-lg shadow-md overflow-hidden w-full">
         <button 
-          className={`flex-1 py-3 px-4 text-center font-medium ${activeFractal === 'sierpinski' ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+          className={`flex-1 py-2 px-2 text-center font-medium text-sm ${activeFractal === 'sierpinski' ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
           onClick={() => {
             setActiveFractal('sierpinski');
             setIterations(0);
@@ -440,7 +430,7 @@ const FractalExplorer = () => {
           Sierpinski Triangle
         </button>
         <button 
-          className={`flex-1 py-3 px-4 text-center font-medium ${activeFractal === 'snowflake' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+          className={`flex-1 py-2 px-2 text-center font-medium text-sm ${activeFractal === 'snowflake' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
           onClick={() => {
             setActiveFractal('snowflake');
             setIterations(0);
@@ -449,7 +439,7 @@ const FractalExplorer = () => {
           Koch Snowflake
         </button>
         <button 
-          className={`flex-1 py-3 px-4 text-center font-medium ${activeFractal === 'dragon' ? 'bg-red-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+          className={`flex-1 py-2 px-2 text-center font-medium text-sm ${activeFractal === 'dragon' ? 'bg-red-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
           onClick={() => {
             setActiveFractal('dragon');
             setIterations(0);
@@ -459,12 +449,8 @@ const FractalExplorer = () => {
         </button>
       </div>
       
-      {/* Iteration slider */}
-      <div className="mb-6 w-full max-w-xl">
-        <div className="flex justify-between mb-1">
-          <span className="text-sm font-medium">Iterations: {iterations}</span>
-          <span className="text-sm font-medium">{info.complexity}</span>
-        </div>
+      {/* Iteration slider (simplified) */}
+      <div className="mb-3 w-full">
         <input
           type="range"
           min="0"
@@ -473,75 +459,16 @@ const FractalExplorer = () => {
           onChange={(e) => setIterations(parseInt(e.target.value))}
           className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
         />
-        <div className="flex justify-between text-xs text-gray-500">
-          <span>0</span>
-          <span>{activeFractal === 'dragon' ? 6 : 3}</span>
-          <span>{activeFractal === 'dragon' ? 12 : 7}</span>
-        </div>
       </div>
       
       {/* Canvas */}
-      <div className="bg-white p-4 rounded-lg shadow-md mb-4">
+      <div className="bg-white p-2 rounded-lg shadow-md">
         <canvas 
           id="fractalCanvas" 
           width={canvasSize.width} 
           height={canvasSize.height}
           className="border border-gray-300 rounded"
         />
-      </div>
-      
-      {/* Information panel */}
-      <div className="bg-white p-4 rounded-lg shadow-md w-full max-w-xl">
-        <h2 className="text-xl font-semibold mb-2">Fractal Information</h2>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <h3 className="font-medium text-gray-700">
-              {activeFractal === 'sierpinski' ? 'Number of Triangles' : 
-               activeFractal === 'snowflake' ? 'Number of Line Segments' : 
-               'Number of Segments'}
-            </h3>
-            <p className="text-2xl font-bold text-blue-600">{info.elements}</p>
-            <p className="text-sm text-gray-500">Formula: {info.pattern}</p>
-          </div>
-          <div>
-            <h3 className="font-medium text-gray-700">Fractal Dimension</h3>
-            <p className="text-lg font-medium text-green-600">{info.dimension}</p>
-          </div>
-        </div>
-        
-        <div className="mt-4">
-          <h3 className="font-medium text-gray-700">
-            {activeFractal === 'sierpinski' ? 'Sierpinski Triangle' : 
-             activeFractal === 'snowflake' ? 'Koch Snowflake' : 
-             'Heighway Dragon'} Properties
-          </h3>
-          <ul className="list-disc pl-5 text-sm text-gray-600 mt-2">
-            {activeFractal === 'sierpinski' && (
-              <>
-                <li>Self-similar: Each part is a reduced copy of the whole</li>
-                <li>Infinite perimeter but zero area as iterations approach infinity</li>
-                <li>Created by repeatedly removing the middle triangle</li>
-                <li>Found in nature in certain fern patterns and crystalline structures</li>
-              </>
-            )}
-            {activeFractal === 'snowflake' && (
-              <>
-                <li>Infinite perimeter but finite area</li>
-                <li>Created by removing the inner third of each side and replacing with a triangle</li>
-                <li>Each iteration adds more triangular "bumps" to the outline</li>
-                <li>First described by mathematician Helge von Koch in 1904</li>
-              </>
-            )}
-            {activeFractal === 'dragon' && (
-              <>
-                <li>Each segment is scaled by a factor of 1/√2 from the original</li>
-                <li>Created by replacing segments with two new segments at right angles</li>
-                <li>New segments alternate between left and right in successive iterations</li>
-                <li>Named after physicist John Heighway who discovered it in 1967</li>
-              </>
-            )}
-          </ul>
-        </div>
       </div>
     </div>
   );
